@@ -1,0 +1,5 @@
+{
+    "type": "ECS",
+    "launchType": "FARGATE",
+    "serviceName": "VASSSAR"
+ }

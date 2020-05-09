@@ -1,0 +1,109 @@
+{
+
+    // The capacity provider strategy associated with the service
+    "capacityProviderStrategy": [ 
+       { 
+          "base": number,
+          "capacityProvider": "string",
+          "weight": number
+       }
+    ],
+
+    // Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.
+    // Up to 32 ASCII characters are allowed.
+    "clientToken": "string",
+
+    // The short name or full Amazon Resource Name (ARN) of the cluster on which to run your service. 
+    // If you do not specify a cluster, the default cluster is assumed.
+    "cluster": "string",
+
+    // Optional deployment parameters that control how many tasks run during the deployment and the ordering of stopping and starting tasks.
+    "deploymentConfiguration": { 
+       "maximumPercent": number,
+       "minimumHealthyPercent": number
+    },
+
+    // The deployment controller to use for the service: "ECS"|"CODE_DEPLOY"|"EXTERNAL"
+    "deploymentController": { 
+       "type": "string"
+    },
+
+    // The number of instantiations of the specified task definition to place and keep running on your cluster.
+    "desiredCount": number,
+
+    // Specifies whether to enable Amazon ECS managed tags for the tasks within the service.
+    "enableECSManagedTags": boolean,
+
+    // The period of time, in seconds, that the Amazon ECS service scheduler should ignore unhealthy Elastic Load Balancing target health checks after a task has first started.
+    "healthCheckGracePeriodSeconds": number,
+
+    // The launch type on which to run your service: EC2 | FARGATE
+    "launchType": "string",
+
+    // A load balancer object representing the load balancers to use with your service.
+    "loadBalancers": [ 
+       { 
+          "containerName": "string",
+          "containerPort": number,
+          "loadBalancerName": "string",
+          "targetGroupArn": "string"
+       }
+    ],
+
+    // The network configuration for the service.
+    // This parameter is required for task definitions that use the awsvpc network mode to receive their own elastic network interface
+    "networkConfiguration": { 
+       "awsvpcConfiguration": { 
+          "assignPublicIp": "string",
+          "securityGroups": [ "string" ],
+          "subnets": [ "string" ]
+       }
+    },
+
+    // An array of placement constraint objects to use for tasks in your service.
+    "placementConstraints": [ 
+       { 
+          "expression": "string",
+          "type": "string"
+       }
+    ],
+
+    // The placement strategy objects to use for tasks in your service. You can specify a maximum of five strategy rules per service.
+    "placementStrategy": [ 
+       { 
+          "field": "string",
+          "type": "string"
+       }
+    ],
+
+    // The platform version that your tasks in the service are running on.  LATEST used if not specified
+    "platformVersion": "string",
+
+    "propagateTags": "string",
+
+    // The name or full Amazon Resource Name (ARN) of the IAM role that allows Amazon ECS to make calls to your load balancer on your behalf.
+    "role": "string",
+
+    "schedulingStrategy": "string",
+
+    // The name of your service
+    "serviceName": "string",
+
+    "serviceRegistries": [ 
+       { 
+          "containerName": "string",
+          "containerPort": number,
+          "port": number,
+          "registryArn": "string"
+       }
+    ],
+
+    "tags": [ 
+       { 
+          "key": "string",
+          "value": "string"
+       }
+    ],
+    
+    "taskDefinition": "string"
+ }

@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4568-4576:4568-4576"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SERVICES=dynamodb:4569,kinesis:4568,sqs:4576
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    #   - "/private${TMPDIR}:/tmp/localstack"
+    networks:
+      - aws_daphne_network
+  setup-resources:
+    image: mesosphere/aws-cli
+    volumes:
+      - type: bind
+        source: ./ecs
+        target: /daphne/ecs
+    environment:
+      - AWS_ACCESS_KEY_ID=dummyaccess
+      - AWS_SECRET_ACCESS_KEY=dummysecret
+      - AWS_DEFAULT_REGION=us-east-1
+    entrypoint: /bin/sh -c
+    command: >
+      "
+
+        # 1. SQS Queues
+        aws sqs create-queue --endpoint-url=http://localstack:4576 --queue-name design_evaluation_queue;
+        aws sqs create-queue --endpoint-url=http://localstack:4576 --queue-name evaluation_return_queue;
+
+        # 2. Register ECS task definitions
+        aws ecs register-task-definition --cli-input-json file:///daphne/ecs/tasks/evaluate-design.json
+
+        # 3. Create ECS Service for task definitions
+        aws ecs create-service --cli-input-json file:///daphne/ecs/services/vassar.json
+
+      "
+    networks:
+      - aws_daphne_network
+    depends_on:
+      - localstack
+    tty: true
+
+networks:
+    aws_daphne_network:
