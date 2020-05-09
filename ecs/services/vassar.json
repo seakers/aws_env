@@ -1,5 +1,12 @@
 {
     "type": "ECS",
     "launchType": "FARGATE",
-    "serviceName": "VASSSAR"
+    "taskDefinition": "vassar-task-definition",
+    "serviceName": "vassar-service",
+    "networkConfiguration": { 
+        "awsvpcConfiguration": { 
+           "assignPublicIp": "DISABLED",
+           "subnets": [ "string" ]
+        }
+     },
  }

@@ -1,6 +1,4 @@
 {
-    "family": "design-evaluation",
-    "networkMode": "awsvpc",
     "containerDefinitions": [
         {
             "name": "vassar_evaluator",
@@ -26,8 +24,14 @@
                 }
             ]
         }
-    ]
+    ],
 
 
-
+    "family": "vassar-task-definition",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1 GB"
 }
