@@ -1,37 +1,48 @@
 {
-    "containerDefinitions": [
-        {
-            "name": "vassar_evaluator",
-            "image": "vassar_evaluator:latest",
-            "portMappings": [
-                {
-                    "containerPort": 0,
-                    "hostPort": 0,
-                    "protocol": "udp"
-                }
-            ],
-            "essential": true,
-            "entryPoint": [
-                ""
-            ],
-            "command": [
-                ""
-            ],
-            "environment": [
-                {
-                    "name": "",
-                    "value": ""
-                }
-            ]
-        }
-    ],
-
-
-    "family": "vassar-task-definition",
-    "networkMode": "awsvpc",
-    "requiresCompatibilities": [
-        "FARGATE"
-    ],
-    "cpu": "512",
-    "memory": "1 GB"
+"containerDefinitions": [
+    {
+        "name": "problem-x-evaluator",
+        "image": "vassar_evaluator:latest",
+        "portMappings": [
+            {
+                "containerPort": 9090,
+                "hostPort": "XXXX",
+                "protocol": "udp"
+            }
+        ],
+        "essential": true,
+        "workingDirectory": "/app/VASSAR_evaluator",
+        "entryPoint": [
+            "gradle" "run"
+        ],
+        "command": [
+            ""
+        ],
+        "environment": [
+            {
+                "name": "PROBLEM_NAME",
+                "value": "SMAP"
+            },
+            {
+                "name": "PROBLEM_PK",
+                "value": "1"
+            },
+            {
+                "name": "PROBLEM_QUEUE_URL",
+                "value": "http://localstack:433/sqs/some-problem-queue"
+            },
+            {
+                "name": "RETURN_QUEUE_URL",
+                "value": "http://localstack:433/sqs/some-return-queue"
+            }
+        ]
+    }
+],
+"family": "vassar-task-definition",
+"networkMode": "awsvpc",
+"requiresCompatibilities": [
+    "FARGATE"
+],
+"cpu": "512",
+"memory": "1 GB"
 }

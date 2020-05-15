@@ -4,40 +4,63 @@ services:
   localstack:
     image: localstack/localstack
     ports:
-      - "4568-4576:4568-4576"
-      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+      - "443:443"
+      - "4510-4520:4510-4520"
+      - "4566-4615:4566-4615"
+    #  - "8080:8080"
     environment:
+      - LOCALSTACK_API_KEY=3mfjxSfeMg
+      - DEFAULT_REGION=us-east-2
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - SERVICES=dynamodb:4569,kinesis:4568,sqs:4576
-      - DEFAULT_REGION=us-east-1
+      - HOSTNAME=localhost
+      - HOSTNAME_EXTERNAL=localhost
+      - USER_SSL=true
+      - SERVICES=serverless,cognito,rds,sqs,sns,ecs
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - HOST_TMP_FOLDER=/tmp/localstack
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    #   - "/private${TMPDIR}:/tmp/localstack"
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: /tmp/localstack
+        target: /tmp/localstack
     networks:
       - aws_daphne_network
+
   setup-resources:
-    image: mesosphere/aws-cli
+    container_name: aws-cli
+    image: amazon/aws-cli
     volumes:
+      - type: bind
+        source: ~/.aws
+        target: /root/.aws
       - type: bind
         source: ./ecs
         target: /daphne/ecs
-    environment:
-      - AWS_ACCESS_KEY_ID=dummyaccess
-      - AWS_SECRET_ACCESS_KEY=dummysecret
-      - AWS_DEFAULT_REGION=us-east-1
+      - type: bind
+        source: ./scripts
+        target: /daphne/scripts  
+      - type: bind
+        source: ./tags
+        target: /daphne/tags  
     entrypoint: /bin/sh -c
     command: >
-      "
+      " 
+        sleep 30s
 
-        # 1. SQS Queues
-        aws sqs create-queue --endpoint-url=http://localstack:4576 --queue-name design_evaluation_queue;
-        aws sqs create-queue --endpoint-url=http://localstack:4576 --queue-name evaluation_return_queue;
+        # # 1. SQS QUEUES
+        aws --endpoint-url=http://localstack:443 sqs create-queue  --queue-name design-eval-queue;
+        aws --endpoint-url=http://localstack:443 sqs create-queue  --queue-name test_queue;
 
-        # 2. Register ECS task definitions
-        aws ecs register-task-definition --cli-input-json file:///daphne/ecs/tasks/evaluate-design.json
+        # aws --endpoint-url=http://localstack:443 sqs tag-queue  --cli-input-json file://./daphne/tags/design-eval-queue.json;
 
-        # 3. Create ECS Service for task definitions
-        aws ecs create-service --cli-input-json file:///daphne/ecs/services/vassar.json
+        # # # 2. ECS TASKS
+        # # aws ecs register-task-definition --cli-input-json file:///daphne/ecs/tasks/evaluate-design.json
+
+        # # # 3. Create ECS Service for task definitions
+        # # aws ecs create-service --cli-input-json file:///daphne/ecs/services/vassar.json
 
       "
     networks:
