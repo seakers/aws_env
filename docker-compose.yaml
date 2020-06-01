@@ -51,8 +51,10 @@ services:
         sleep 30s
 
         # # 1. SQS QUEUES
-        aws --endpoint-url=http://localstack:443 sqs create-queue  --queue-name design-eval-queue;
-        aws --endpoint-url=http://localstack:443 sqs create-queue  --queue-name test_queue;
+        # aws --endpoint-url=http://localstack:443 sqs create-queue  --queue-name design-eval-queue;
+        # aws --endpoint-url=http://localstack:443 sqs create-queue  --queue-name test_queue;
+
+        aws --endpoint-url=http://localstack:443 lambda create-function --function-name remote_schema --zip-file /home/gabe/repos/seakers/design_evaluator/graphql-engine/community/boilerplates/remote-schemas/aws-lambda/nodejs/graphql.zip
 
         # aws --endpoint-url=http://localstack:443 sqs tag-queue  --cli-input-json file://./daphne/tags/design-eval-queue.json;
 

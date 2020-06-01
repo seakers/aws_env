@@ -1,0 +1,6 @@
+{
+    "QueueUrl": "https://localstack:443/queue/test_queue",
+    "Tags": {
+        "test": "yes"
+    }
+}
